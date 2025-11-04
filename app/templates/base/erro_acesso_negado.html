@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Acesso Negado - Sistema de Gestão Predial</title>
+    <title>Acesso Negado - JardimGIS</title>
     <!-- Inclui o CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/styles.css') }}">
@@ -20,14 +20,12 @@
         <div class="container">
             <div class="logo-small">
                 <a href="{{ url_for('web.index') }}" class="logo-link">
-                    Sistema de Gestão Predial - TCE-GO
+                    🌳 JardimGIS - TCE-GO
                 </a>
             </div>
             <nav class="global-nav">
                 <a href="{{ url_for('web.index') }}" class="nav-link">🏠 Início</a>
-                <a href="{{ url_for('checklists.secoes_checklists') }}" class="nav-link">📋 Checklists</a>
-                <a href="{{ url_for('funcionarios_empresas.editar_funcionarios') }}" class="nav-link">👥 Funcionários</a>
-                <a href="{{ url_for('nfs.controle_nfs') }}" class="nav-link">📄 Notas Fiscais</a>
+                <a href="{{ url_for('web.index') }}" class="nav-link">🌳 Árvores</a>
             </nav>
         </div>
     </header>

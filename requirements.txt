@@ -1,4 +1,4 @@
-# Dependências do Sistema de Controle de Notas Fiscais
+# Dependências do Sistema JardimGIS - Controle Geográfico de Árvores
 
 # Framework Web
 Flask==3.0.3

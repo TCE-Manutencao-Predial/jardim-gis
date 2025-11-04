@@ -23,9 +23,12 @@ def index():
     # Carrega dados do controle de árvores
     arvores_data = load_json_file(ARVORES_JSON_PATH)
 
-    # Se os dados estão no formato antigo com chave "Controle de NFs"
+    # Compatibilidade: Se os dados estão no formato antigo
     if isinstance(arvores_data, dict) and "Controle de NFs" in arvores_data:
         arvores_data = arvores_data["Controle de NFs"]
+    # Compatibilidade: Se os dados estão com a nova chave
+    if isinstance(arvores_data, dict) and "Árvores" in arvores_data:
+        arvores_data = arvores_data["Árvores"]
 
     # Se o arquivo não existir ou estiver vazio, inicializa com lista vazia
     if not isinstance(arvores_data, list):

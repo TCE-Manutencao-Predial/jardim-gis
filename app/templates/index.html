@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Controle de Notas Fiscais - TCE-GO</title>
-    <meta name="description" content="Sistema institucional para controle e gestão de notas fiscais do TCE-GO">
+    <title>JardimGIS - Sistema de Controle Geográfico de Árvores - TCE-GO</title>
+    <meta name="description" content="Sistema institucional para gestão e mapeamento de árvores, mudas e jardins do TCE-GO">
     
     <!-- Inclui o CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/nfs/controle_nfs.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/arvores/controle_arvores.css') }}">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,11 +27,11 @@
     <div class="nfs-custom-header">
         <nav class="nfs-custom-nav">
             <h1 class="nfs-system-title">
-                Sistema de Controle de Notas Fiscais
+                🌳 JardimGIS - Controle Geográfico de Árvores
             </h1>
             <div class="nfs-header-badge">
                 <span class="nfs-status-badge">
-                    <i class="fas fa-shield-check"></i>
+                    <i class="fas fa-leaf"></i>
                     TCE-GO
                 </span>
             </div>
@@ -42,15 +42,15 @@
         <!-- Estatísticas Simplificadas -->
         <div class="nfs-stats-simplified">
             <div class="nfs-stats-content">
-                <i class="fas fa-chart-bar"></i>
-                <p>Total de Notas Fiscais Registradas: <strong>{{ nfs_data|length if nfs_data else 0 }}</strong></p>
+                <i class="fas fa-tree"></i>
+                <p>Total de Árvores Cadastradas: <strong>{{ arvores_data|length if arvores_data else 0 }}</strong></p>
             </div>
         </div>
         
         <div class="navegacao-secoes">
             <h2 id="secaoTitle">
-                <i class="fas fa-file-invoice-dollar"></i> 
-                Gestão de Notas Fiscais
+                <i class="fas fa-seedling"></i> 
+                Gestão de Árvores e Jardins
             </h2>
         </div>
 
@@ -68,112 +68,191 @@
             {% endif %}
         {% endwith %}
 
-        {% if nfs_data|length == 0 %}
+        {% if arvores_data|length == 0 %}
             <div class="nfs-empty-state">
-                <i class="fas fa-file-invoice-slash"></i>
-                <h3>Nenhuma nota fiscal cadastrada</h3>
-                <p>Comece adicionando sua primeira nota fiscal ao sistema.</p>
+                <i class="fas fa-tree"></i>
+                <h3>Nenhuma árvore cadastrada</h3>
+                <p>Comece adicionando a primeira árvore ao sistema de gestão ambiental.</p>
                 <button type="button" id="btn-add-first-nf" class="nfs-btn-action nfs-btn-primary" style="margin-top: 1.5rem;">
-                    <i class="fas fa-plus"></i> Adicionar Primeira NF
+                    <i class="fas fa-plus"></i> Adicionar Primeira Árvore
                 </button>
             </div>
         {% else %}
             <form method="POST" id="nfs-form">
                 <div id="nfs-container" class="nfs-grid">
-                    {% for nf in nfs_data %}
+                    {% for arvore in arvores_data %}
                         {% set row_idx = loop.index0 %}
                         <div class="nfs-card" data-nf-index="{{ row_idx }}">
                             <div class="nfs-card-header">
-                                <div class="nfs-card-empresa">{{ nf.Empresa if nf.Empresa else 'Empresa não informada' }}</div>
+                                <div class="nfs-card-empresa">
+                                    <i class="fas fa-leaf"></i> 
+                                    {{ arvore['Nome Popular'] if arvore['Nome Popular'] else 'Espécie não identificada' }}
+                                    {% if arvore['ID'] %}
+                                        <span style="font-size: 0.85em; opacity: 0.7;"> #{{ arvore['ID'] }}</span>
+                                    {% endif %}
+                                </div>
                                 <button type="button" class="nfs-btn-remove" onclick="removeNFCard(this)">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                             
                             <div class="nfs-card-body">
-                                <div class="nfs-valor-display">{{ nf['Valor da NF'] if nf['Valor da NF'] else 'R$ 0,00' }}</div>
+                                <!-- ID e Nome Científico em destaque -->
+                                <div class="nfs-valor-display" style="font-size: 1em; font-style: italic;">
+                                    {{ arvore['Nome Científico'] if arvore['Nome Científico'] else 'Nome científico não informado' }}
+                                </div>
                                 
                                 <div class="nfs-form-row">
                                     <div class="nfs-form-group">
                                         <label class="nfs-label">
-                                            <i class="fas fa-building"></i> Empresa
+                                            <i class="fas fa-hashtag"></i> ID
                                         </label>
                                         <input type="text" 
-                                               name="row-{{ row_idx }}-Empresa" 
-                                               value="{{ nf.Empresa if nf.Empresa else '' }}"
+                                               name="row-{{ row_idx }}-ID" 
+                                               value="{{ arvore['ID'] if arvore['ID'] else '' }}"
                                                class="nfs-input"
-                                               placeholder="Nome da empresa">
+                                               placeholder="Código único">
                                     </div>
                                     
                                     <div class="nfs-form-group">
                                         <label class="nfs-label">
-                                            <i class="fas fa-file-contract"></i> Processo
+                                            <i class="fas fa-leaf"></i> Nome Popular
                                         </label>
                                         <input type="text" 
-                                               name="row-{{ row_idx }}-Processo do Contrato" 
-                                               value="{{ nf['Processo do Contrato'] if nf['Processo do Contrato'] else '' }}"
+                                               name="row-{{ row_idx }}-Nome Popular" 
+                                               value="{{ arvore['Nome Popular'] if arvore['Nome Popular'] else '' }}"
                                                class="nfs-input"
-                                               placeholder="Número do processo">
+                                               placeholder="Ex: Ipê Amarelo">
                                     </div>
                                 </div>
 
                                 <div class="nfs-form-group">
                                     <label class="nfs-label">
-                                        <i class="fas fa-clipboard-list"></i> Objeto do Contrato
+                                        <i class="fas fa-dna"></i> Nome Científico
                                     </label>
                                     <input type="text" 
-                                           name="row-{{ row_idx }}-Objeto do Contrato" 
-                                           value="{{ nf['Objeto do Contrato'] if nf['Objeto do Contrato'] else '' }}"
+                                           name="row-{{ row_idx }}-Nome Científico" 
+                                           value="{{ arvore['Nome Científico'] if arvore['Nome Científico'] else '' }}"
                                            class="nfs-input"
-                                           placeholder="Descrição do objeto">
+                                           placeholder="Ex: Handroanthus chrysotrichus">
+                                </div>
+
+                                <div class="nfs-form-group">
+                                    <label class="nfs-label">
+                                        <i class="fas fa-map-marker-alt"></i> Localização Textual
+                                    </label>
+                                    <input type="text" 
+                                           name="row-{{ row_idx }}-Localização Textual" 
+                                           value="{{ arvore['Localização Textual'] if arvore['Localização Textual'] else '' }}"
+                                           class="nfs-input"
+                                           placeholder="Ex: Jardim frontal - Entrada principal">
+                                </div>
+
+                                <div class="nfs-form-group">
+                                    <label class="nfs-label">
+                                        <i class="fas fa-map-pin"></i> Coordenadas GPS
+                                    </label>
+                                    <input type="text" 
+                                           name="row-{{ row_idx }}-Coordenadas GPS" 
+                                           value="{{ arvore['Coordenadas GPS'] if arvore['Coordenadas GPS'] else '' }}"
+                                           class="nfs-input"
+                                           placeholder="Ex: -16.6869, -49.2648">
                                 </div>
 
                                 <div class="nfs-form-row">
                                     <div class="nfs-form-group">
                                         <label class="nfs-label">
-                                            <i class="fas fa-calendar-times"></i> Término
+                                            <i class="fas fa-calendar-plus"></i> Data de Plantio
                                         </label>
                                         <input type="text" 
-                                               name="row-{{ row_idx }}-Data término do contrato" 
-                                               value="{{ nf['Data término do contrato'] if nf['Data término do contrato'] else '' }}"
-                                               class="nfs-input nfs-input-data"
-                                               placeholder="mm/aaaa">
-                                    </div>
-                                    
-                                    <div class="nfs-form-group">
-                                        <label class="nfs-label">
-                                            <i class="fas fa-file-alt"></i> Memorando
-                                        </label>
-                                        <input type="text" 
-                                               name="row-{{ row_idx }}-N° Memorando" 
-                                               value="{{ nf['N° Memorando'] if nf['N° Memorando'] else '' }}"
-                                               class="nfs-input nfs-input-memorando"
-                                               placeholder="000/aaaa"
-                                               title="Número do memorando">
-                                    </div>
-                                </div>
-
-                                <div class="nfs-form-row">
-                                    <div class="nfs-form-group">
-                                        <label class="nfs-label">
-                                            <i class="fas fa-calendar-alt"></i> Data Memo
-                                        </label>
-                                        <input type="text" 
-                                               name="row-{{ row_idx }}-Data Memorando" 
-                                               value="{{ nf['Data Memorando'] if nf['Data Memorando'] else '' }}"
+                                               name="row-{{ row_idx }}-Data de Plantio" 
+                                               value="{{ arvore['Data de Plantio'] if arvore['Data de Plantio'] else '' }}"
                                                class="nfs-input nfs-input-data"
                                                placeholder="DD/MM/AAAA">
                                     </div>
                                     
                                     <div class="nfs-form-group">
                                         <label class="nfs-label">
-                                            <i class="fas fa-dollar-sign"></i> Valor
+                                            <i class="fas fa-user-friends"></i> Plantado Por
                                         </label>
                                         <input type="text" 
-                                               name="row-{{ row_idx }}-Valor da NF" 
-                                               value="{{ nf['Valor da NF'] if nf['Valor da NF'] else '' }}"
-                                               class="nfs-input nfs-input-valor"
-                                               placeholder="R$ 0,00">
+                                               name="row-{{ row_idx }}-Plantado Por" 
+                                               value="{{ arvore['Plantado Por'] if arvore['Plantado Por'] else '' }}"
+                                               class="nfs-input"
+                                               placeholder="Nome do responsável">
+                                    </div>
+                                </div>
+
+                                <div class="nfs-form-group">
+                                    <label class="nfs-label">
+                                        <i class="fas fa-tags"></i> Nomes Populares Adicionais
+                                    </label>
+                                    <input type="text" 
+                                           name="row-{{ row_idx }}-Nomes Populares Adicionais" 
+                                           value="{{ arvore['Nomes Populares Adicionais'] if arvore['Nomes Populares Adicionais'] else '' }}"
+                                           class="nfs-input"
+                                           placeholder="Outros nomes conhecidos">
+                                </div>
+
+                                <div class="nfs-form-row">
+                                    <div class="nfs-form-group">
+                                        <label class="nfs-label">
+                                            <i class="fas fa-flower"></i> Época de Floração
+                                        </label>
+                                        <input type="text" 
+                                               name="row-{{ row_idx }}-Época de Floração" 
+                                               value="{{ arvore['Época de Floração'] if arvore['Época de Floração'] else '' }}"
+                                               class="nfs-input"
+                                               placeholder="Ex: Julho a Setembro">
+                                    </div>
+                                    
+                                    <div class="nfs-form-group">
+                                        <label class="nfs-label">
+                                            <i class="fas fa-apple-alt"></i> Época de Frutificação
+                                        </label>
+                                        <input type="text" 
+                                               name="row-{{ row_idx }}-Época de Frutificação" 
+                                               value="{{ arvore['Época de Frutificação'] if arvore['Época de Frutificação'] else '' }}"
+                                               class="nfs-input"
+                                               placeholder="Ex: Setembro a Novembro">
+                                    </div>
+                                </div>
+
+                                <div class="nfs-form-group">
+                                    <label class="nfs-label">
+                                        <i class="fas fa-info-circle"></i> Características
+                                    </label>
+                                    <textarea name="row-{{ row_idx }}-Características" 
+                                              class="nfs-textarea"
+                                              placeholder="Descrição das características da espécie"
+                                              rows="2">{{ arvore['Características'] if arvore['Características'] else '' }}</textarea>
+                                </div>
+
+                                <div class="nfs-form-row">
+                                    <div class="nfs-form-group">
+                                        <label class="nfs-label">
+                                            <i class="fas fa-heart"></i> Estado da Árvore
+                                        </label>
+                                        <select name="row-{{ row_idx }}-Estado de Conservação da Árvore" class="nfs-input">
+                                            <option value="Excelente" {% if arvore['Estado de Conservação da Árvore'] == 'Excelente' %}selected{% endif %}>Excelente</option>
+                                            <option value="Bom" {% if arvore['Estado de Conservação da Árvore'] == 'Bom' %}selected{% endif %}>Bom</option>
+                                            <option value="Regular" {% if arvore['Estado de Conservação da Árvore'] == 'Regular' %}selected{% endif %}>Regular</option>
+                                            <option value="Ruim" {% if arvore['Estado de Conservação da Árvore'] == 'Ruim' %}selected{% endif %}>Ruim</option>
+                                            <option value="Crítico" {% if arvore['Estado de Conservação da Árvore'] == 'Crítico' %}selected{% endif %}>Crítico</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="nfs-form-group">
+                                        <label class="nfs-label">
+                                            <i class="fas fa-sign"></i> Estado da Placa
+                                        </label>
+                                        <select name="row-{{ row_idx }}-Estado de Conservação da Placa" class="nfs-input">
+                                            <option value="Excelente" {% if arvore['Estado de Conservação da Placa'] == 'Excelente' %}selected{% endif %}>Excelente</option>
+                                            <option value="Bom" {% if arvore['Estado de Conservação da Placa'] == 'Bom' %}selected{% endif %}>Bom</option>
+                                            <option value="Regular" {% if arvore['Estado de Conservação da Placa'] == 'Regular' %}selected{% endif %}>Regular</option>
+                                            <option value="Ruim" {% if arvore['Estado de Conservação da Placa'] == 'Ruim' %}selected{% endif %}>Ruim</option>
+                                            <option value="Sem Placa" {% if arvore['Estado de Conservação da Placa'] == 'Sem Placa' %}selected{% endif %}>Sem Placa</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -184,7 +263,7 @@
                                         </label>
                                         <input type="text" 
                                                name="row-{{ row_idx }}-Responsável" 
-                                               value="{{ nf['Responsável'] if nf['Responsável'] else 'Não definido' }}"
+                                               value="{{ arvore['Responsável'] if arvore['Responsável'] else 'Não definido' }}"
                                                class="nfs-input nfs-input-readonly"
                                                placeholder="Responsável pela edição"
                                                readonly>
@@ -196,7 +275,7 @@
                                         </label>
                                         <input type="text" 
                                                name="row-{{ row_idx }}-Data da Última Atualização" 
-                                               value="{{ nf['Data da Última Atualização'] if nf['Data da Última Atualização'] else 'Nunca editado' }}"
+                                               value="{{ arvore['Data da Última Atualização'] if arvore['Data da Última Atualização'] else 'Nunca editado' }}"
                                                class="nfs-input nfs-input-readonly"
                                                placeholder="Data da última modificação"
                                                readonly>
@@ -209,11 +288,11 @@
                                     </label>
                                     <textarea name="row-{{ row_idx }}-Observações" 
                                               class="nfs-textarea"
-                                              placeholder="Observações adicionais"
-                                              rows="2">{{ nf['Observações'] if nf['Observações'] else '' }}</textarea>
+                                              placeholder="Observações adicionais sobre a árvore"
+                                              rows="2">{{ arvore['Observações'] if arvore['Observações'] else '' }}</textarea>
                                 </div>
 
-                                <input type="hidden" name="row-{{ row_idx }}-original" value="{{ nf|tojson|safe }}" />
+                                <input type="hidden" name="row-{{ row_idx }}-original" value="{{ arvore|tojson|safe }}" />
                             </div>
                         </div>
                     {% endfor %}
@@ -227,7 +306,7 @@
                         <i class="fas fa-sync-alt"></i> Cancelar
                     </button>
                     <button type="button" id="btn-add-row" class="nfs-btn-action nfs-btn-add-action">
-                        <i class="fas fa-plus"></i> Adicionar NF
+                        <i class="fas fa-plus"></i> Adicionar Árvore
                     </button>
                     <button type="button" id="btn-exportar-excel" class="nfs-btn-action nfs-btn-export">
                         <i class="fas fa-file-excel"></i> Exportar Excel
@@ -240,7 +319,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-info">
-                <p><strong>Sistema de Controle de Notas Fiscais</strong></p>
+                <p><strong>🌳 JardimGIS - Sistema de Controle Geográfico de Árvores</strong></p>
                 <p>Tribunal de Contas do Estado de Goiás</p>
             </div>
             <div class="footer-credits">
@@ -252,7 +331,7 @@
 
     <!-- Scripts -->
     <script>
-        window.secao = "Gestão de Notas Fiscais";
+        window.secao = "Gestão de Árvores e Jardins";
         window.isMobileView = false;
 
         // Auto-hide flash messages with fade effect
@@ -308,7 +387,7 @@
     
     <!-- Biblioteca SheetJS para exportação Excel -->
     <script src="{{ url_for('static', filename='js/libs/xlsx.bundle.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pages/nfs/editar_controle_nfs.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pages/arvores/editar_controle_arvores.js') }}"></script>
     <!-- Módulos de Exportação Excel -->
     <script src="{{ url_for('static', filename='js/excel/excel_formatacao_core.js') }}"></script>
     <script src="{{ url_for('static', filename='js/excel/excel_utils.js') }}"></script>

@@ -1,5 +1,5 @@
-APP_NAME=controle_nfs
-PORT=4242
+APP_NAME=JardimGIS
+PORT=4141
 
 VENV_PYTHON=.venv/bin/python
 VENV_PIP=.venv/bin/pip
@@ -38,7 +38,7 @@ undeploy:
 
 # Configurações do Servico
 # ----------------------------
-SERVICE_NAME=controle_nfs
+SERVICE_NAME=JardimGIS
 
 service-reload:
 	sudo systemctl daemon-reload

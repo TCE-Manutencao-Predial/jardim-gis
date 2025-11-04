@@ -1,8 +1,8 @@
-// editar_controle_nfs.js - Script para edição de NFs
+// editar_controle_arvores.js - Script para edição de Árvores - JardimGIS
 
-// Função para remover um card de NF
+// Função para remover um card de Árvore
 function removeNFCard(button) {
-    if (confirm('Tem certeza que deseja remover esta nota fiscal?')) {
+    if (confirm('Tem certeza que deseja remover este registro de árvore?')) {
         const card = button.closest('.nfs-card');
         card.style.opacity = '0';
         card.style.transform = 'scale(0.8)';
@@ -31,7 +31,7 @@ function updateNFIndexes() {
     });
 }
 
-// Função para adicionar nova NF
+// Função para adicionar nova Árvore
 document.addEventListener('DOMContentLoaded', function() {
     const btnAddRow = document.getElementById('btn-add-row');
     
@@ -59,105 +59,89 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Formatação de valores monetários
-    document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('nfs-input-valor')) {
-            formatarValor(e.target);
-        }
-    });
-    
-    // Atualização do display de valor
-    document.addEventListener('blur', function(e) {
-        if (e.target.classList.contains('nfs-input-valor')) {
-            const card = e.target.closest('.nfs-card');
-            const display = card.querySelector('.nfs-valor-display');
-            if (display) {
-                display.textContent = e.target.value || 'R$ 0,00';
-            }
-        }
-    }, true);
+    // Removida formatação de valores monetários (não se aplica a árvores)
 });
 
-// Função para criar HTML de um novo card de NF
+// Função para criar HTML de um novo card de Árvore
 function createNFCard(index) {
     return `
         <div class="nfs-card" data-nf-index="${index}">
             <div class="nfs-card-header">
-                <div class="nfs-card-empresa">Nova Nota Fiscal</div>
+                <div class="nfs-card-empresa">
+                    <i class="fas fa-leaf"></i> Nova Árvore
+                </div>
                 <button type="button" class="nfs-btn-remove" onclick="removeNFCard(this)">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
             
             <div class="nfs-card-body">
-                <div class="nfs-valor-display">R$ 0,00</div>
+                <div class="nfs-valor-display" style="font-size: 1em; font-style: italic;">Nome científico não informado</div>
                 
                 <div class="nfs-form-row">
                     <div class="nfs-form-group">
                         <label class="nfs-label">
-                            <i class="fas fa-building"></i> Empresa
+                            <i class="fas fa-hashtag"></i> ID
                         </label>
                         <input type="text" 
-                               name="row-${index}-Empresa" 
+                               name="row-${index}-ID" 
                                value=""
                                class="nfs-input"
-                               placeholder="Nome da empresa">
+                               placeholder="Código único">
                     </div>
                     
                     <div class="nfs-form-group">
                         <label class="nfs-label">
-                            <i class="fas fa-file-contract"></i> Processo
+                            <i class="fas fa-leaf"></i> Nome Popular
                         </label>
                         <input type="text" 
-                               name="row-${index}-Processo do Contrato" 
+                               name="row-${index}-Nome Popular" 
                                value=""
                                class="nfs-input"
-                               placeholder="Número do processo">
+                               placeholder="Ex: Ipê Amarelo">
                     </div>
                 </div>
 
                 <div class="nfs-form-group">
                     <label class="nfs-label">
-                        <i class="fas fa-clipboard-list"></i> Objeto do Contrato
+                        <i class="fas fa-dna"></i> Nome Científico
                     </label>
                     <input type="text" 
-                           name="row-${index}-Objeto do Contrato" 
+                           name="row-${index}-Nome Científico" 
                            value=""
                            class="nfs-input"
-                           placeholder="Descrição do objeto">
+                           placeholder="Ex: Handroanthus chrysotrichus">
+                </div>
+
+                <div class="nfs-form-group">
+                    <label class="nfs-label">
+                        <i class="fas fa-map-marker-alt"></i> Localização Textual
+                    </label>
+                    <input type="text" 
+                           name="row-${index}-Localização Textual" 
+                           value=""
+                           class="nfs-input"
+                           placeholder="Ex: Jardim frontal - Entrada principal">
+                </div>
+
+                <div class="nfs-form-group">
+                    <label class="nfs-label">
+                        <i class="fas fa-map-pin"></i> Coordenadas GPS
+                    </label>
+                    <input type="text" 
+                           name="row-${index}-Coordenadas GPS" 
+                           value=""
+                           class="nfs-input"
+                           placeholder="Ex: -16.6869, -49.2648">
                 </div>
 
                 <div class="nfs-form-row">
                     <div class="nfs-form-group">
                         <label class="nfs-label">
-                            <i class="fas fa-calendar-times"></i> Término
+                            <i class="fas fa-calendar-plus"></i> Data de Plantio
                         </label>
                         <input type="text" 
-                               name="row-${index}-Data término do contrato" 
-                               value=""
-                               class="nfs-input nfs-input-data"
-                               placeholder="mm/aaaa">
-                    </div>
-                    
-                    <div class="nfs-form-group">
-                        <label class="nfs-label">
-                            <i class="fas fa-file-alt"></i> Memorando
-                        </label>
-                        <input type="text" 
-                               name="row-${index}-N° Memorando" 
-                               value=""
-                               class="nfs-input nfs-input-memorando"
-                               placeholder="000/aaaa">
-                    </div>
-                </div>
-
-                <div class="nfs-form-row">
-                    <div class="nfs-form-group">
-                        <label class="nfs-label">
-                            <i class="fas fa-calendar-alt"></i> Data Memo
-                        </label>
-                        <input type="text" 
-                               name="row-${index}-Data Memorando" 
+                               name="row-${index}-Data de Plantio" 
                                value=""
                                class="nfs-input nfs-input-data"
                                placeholder="DD/MM/AAAA">
@@ -165,13 +149,86 @@ function createNFCard(index) {
                     
                     <div class="nfs-form-group">
                         <label class="nfs-label">
-                            <i class="fas fa-dollar-sign"></i> Valor
+                            <i class="fas fa-user-friends"></i> Plantado Por
                         </label>
                         <input type="text" 
-                               name="row-${index}-Valor da NF" 
+                               name="row-${index}-Plantado Por" 
                                value=""
-                               class="nfs-input nfs-input-valor"
-                               placeholder="R$ 0,00">
+                               class="nfs-input"
+                               placeholder="Nome do responsável">
+                    </div>
+                </div>
+
+                <div class="nfs-form-group">
+                    <label class="nfs-label">
+                        <i class="fas fa-tags"></i> Nomes Populares Adicionais
+                    </label>
+                    <input type="text" 
+                           name="row-${index}-Nomes Populares Adicionais" 
+                           value=""
+                           class="nfs-input"
+                           placeholder="Outros nomes conhecidos">
+                </div>
+
+                <div class="nfs-form-row">
+                    <div class="nfs-form-group">
+                        <label class="nfs-label">
+                            <i class="fas fa-flower"></i> Época de Floração
+                        </label>
+                        <input type="text" 
+                               name="row-${index}-Época de Floração" 
+                               value=""
+                               class="nfs-input"
+                               placeholder="Ex: Julho a Setembro">
+                    </div>
+                    
+                    <div class="nfs-form-group">
+                        <label class="nfs-label">
+                            <i class="fas fa-apple-alt"></i> Época de Frutificação
+                        </label>
+                        <input type="text" 
+                               name="row-${index}-Época de Frutificação" 
+                               value=""
+                               class="nfs-input"
+                               placeholder="Ex: Setembro a Novembro">
+                    </div>
+                </div>
+
+                <div class="nfs-form-group">
+                    <label class="nfs-label">
+                        <i class="fas fa-info-circle"></i> Características
+                    </label>
+                    <textarea name="row-${index}-Características" 
+                              class="nfs-textarea"
+                              placeholder="Descrição das características da espécie"
+                              rows="2"></textarea>
+                </div>
+
+                <div class="nfs-form-row">
+                    <div class="nfs-form-group">
+                        <label class="nfs-label">
+                            <i class="fas fa-heart"></i> Estado da Árvore
+                        </label>
+                        <select name="row-${index}-Estado de Conservação da Árvore" class="nfs-input">
+                            <option value="Excelente">Excelente</option>
+                            <option value="Bom" selected>Bom</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Ruim">Ruim</option>
+                            <option value="Crítico">Crítico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="nfs-form-group">
+                        <label class="nfs-label">
+                            <i class="fas fa-sign"></i> Estado da Placa
+                        </label>
+                        <select name="row-${index}-Estado de Conservação da Placa" class="nfs-input">
+                            <option value="Excelente">Excelente</option>
+                            <option value="Bom" selected>Bom</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Ruim">Ruim</option>
+                            <option value="Sem Placa">Sem Placa</option>
+                        </select>
                     </div>
                 </div>
 
@@ -207,7 +264,7 @@ function createNFCard(index) {
                     </label>
                     <textarea name="row-${index}-Observações" 
                               class="nfs-textarea"
-                              placeholder="Observações adicionais"
+                              placeholder="Observações adicionais sobre a árvore"
                               rows="2"></textarea>
                 </div>
 
@@ -217,20 +274,8 @@ function createNFCard(index) {
     `;
 }
 
-// Função para formatar valor monetário
-function formatarValor(input) {
-    let valor = input.value.replace(/\D/g, '');
-    
-    if (valor.length === 0) {
-        input.value = '';
-        return;
-    }
-    
-    valor = (parseInt(valor) / 100).toFixed(2);
-    valor = valor.replace('.', ',');
-    valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-    input.value = 'R$ ' + valor;
-}
+// Função removida - não se aplica a sistema de árvores
+// function formatarValor(input) { ... }
 
 // Confirmação antes de sair da página com alterações não salvas
 let formModified = false;

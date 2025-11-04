@@ -17,7 +17,8 @@ ROUTES_PREFIX = '/jardimgis'
 
 def create_app():
     app = Flask(__name__, static_url_path=ROUTES_PREFIX)
-    app.config['SECRET_KEY'] = '123'
+    # TODO: Em produção, use uma SECRET_KEY segura de variável de ambiente
+    app.config['SECRET_KEY'] = '123'  # Alterar em produção!
     app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
     
     # Inicializa o agendador de backups automáticos
