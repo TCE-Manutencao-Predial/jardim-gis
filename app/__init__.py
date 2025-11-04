@@ -120,16 +120,10 @@ def create_app():
     except Exception as e:
         print(f"❌ Erro ao registrar arvores_bp: {e}")
 
-    # Rota específica para capturar /jardimgis/ que não está sendo capturada pelos blueprints
-    @app.route('/jardimgis/')
-    def jardimgis_app_level():
-        """Rota no nível da aplicação para /jardimgis/ - fallback"""
-        return redirect('/', code=302)
-    
-    # Rota raiz só existe se não houver prefix (para evitar duplicação)
-    if not ROUTES_PREFIX:
-        @app.route('/')
-        def index_redirect_route():
-            return redirect('/jardimgis')
+    # Rota raiz redireciona para /jardimgis
+    @app.route('/')
+    def root_redirect():
+        """Redireciona raiz para /jardimgis"""
+        return redirect(ROUTES_PREFIX if ROUTES_PREFIX else '/jardimgis', code=302)
 
     return app

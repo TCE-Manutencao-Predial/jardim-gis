@@ -89,22 +89,6 @@ def index():
     
     return render_template('index.html', arvores_data=arvores_data)
 
-@web_bp.route('/jardimgis')
-@requisitar_autorizacao_especial
-def jardimgis_sem_barra():
-    """
-    Rota para compatibilidade com Apache - /jardimgis (sem barra final)
-    """
-    return redirect('/')
-
-@web_bp.route('/jardimgis/')
-@requisitar_autorizacao_especial
-def jardimgis_com_barra():
-    """
-    Rota para compatibilidade com Apache - /jardimgis/ (com barra final)
-    """
-    return redirect('/')
-
 @web_bp.route('/erro_acesso_negado_401')
 @web_bp.route('/erro_acesso_negado_403')
 def acesso_negado():
