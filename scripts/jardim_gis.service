@@ -1,0 +1,15 @@
+[Unit]
+Description=jardim_gis - Sistema de Controle Geográfico de Árvores - TCE-GO
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/var/softwaresTCE/jardim_gis
+ExecStart=/var/softwaresTCE/jardim_gis/scripts/run.sh
+Restart=always
+RestartSec=9
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

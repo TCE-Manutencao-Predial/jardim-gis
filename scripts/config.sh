@@ -2,8 +2,8 @@
 # Parâmetros de Deploy
 # ----------------------------
 
-PROJECT_NAME="JardimGIS"
-SERVICE_NAME="JardimGIS.service"
+PROJECT_NAME="jardim_gis"
+SERVICE_NAME="jardim_gis.service"
 
 ROOT_FRONTEND=/var/www/automacao.tce.go.gov.br/$PROJECT_NAME
 
@@ -19,4 +19,4 @@ HTACCESS_FILE="scripts/htaccess"
 # Configurações
 AUTO_HABILITAR_SERVICO=true
 
-LOGS_PATH=/var/softwaresTCE/logs/JardimGIS
+LOGS_PATH=/var/softwaresTCE/logs/jardim_gis

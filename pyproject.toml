@@ -1,7 +1,7 @@
 [project]
-name = "JardimGIS"
+name = "app"
 version = "1.0.0"
-description = "Sistema de controle geográfico de árvores - JardimGIS"
+description = "Sistema de controle geográfico de árvores - jardim_gis"
 dependencies = [
     "blinker==1.9.0",
     "certifi==2025.1.31",

@@ -1,4 +1,4 @@
-APP_NAME=JardimGIS
+APP_NAME=jardim_gis
 PORT=4141
 
 VENV_PYTHON=.venv/bin/python
@@ -38,7 +38,7 @@ undeploy:
 
 # Configurações do Servico
 # ----------------------------
-SERVICE_NAME=JardimGIS
+SERVICE_NAME=jardim_gis
 
 service-reload:
 	sudo systemctl daemon-reload
