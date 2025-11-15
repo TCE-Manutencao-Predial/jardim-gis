@@ -194,6 +194,46 @@ deploy_servico() {
 }
 
 
+# Deploy Configuração Apache
+# ------------------------------------
+
+deploy_apache_config() {
+    echo "[Deploy] Iniciando instalação da configuração Apache..."
+    
+    # Path da configuração Apache no repositório scada-web
+    APACHE_CONFIG_SOURCE="/var/softwaresTCE/scada-web/scripts/httpd_67_jardimgis.conf"
+    APACHE_CONFIG_DEST="/etc/httpd/conf.d/httpd_67_jardimgis.conf"
+    
+    if [ ! -f "$APACHE_CONFIG_SOURCE" ]; then
+        echo "[Deploy] ⚠️  AVISO: Configuração Apache não encontrada em $APACHE_CONFIG_SOURCE"
+        echo "[Deploy] Certifique-se de que scada-web está atualizado."
+        return 1
+    fi
+    
+    echo "[Deploy] Copiando configuração Apache..."
+    if ! sudo cp "$APACHE_CONFIG_SOURCE" "$APACHE_CONFIG_DEST" 2>/dev/null; then
+        echo "[Deploy] ❌ Erro ao copiar configuração Apache"
+        return 1
+    fi
+    
+    echo "[Deploy] Validando sintaxe Apache..."
+    if ! sudo apachectl configtest 2>&1 | grep -q "Syntax OK"; then
+        echo "[Deploy] ❌ Erro de sintaxe na configuração Apache!"
+        sudo apachectl configtest
+        return 1
+    fi
+    
+    echo "[Deploy] Recarregando Apache..."
+    if ! sudo systemctl reload httpd 2>/dev/null; then
+        echo "[Deploy] ⚠️  Erro ao recarregar Apache. Tentando restart..."
+        sudo systemctl restart httpd
+    fi
+    
+    echo "[Deploy] ✅ Configuração Apache instalada e aplicada."
+    echo "[Deploy] URL: http://automacao.tce.go.gov.br/jardimgis"
+}
+
+
 # Específicos deste app
 # -------------------------------------
 
@@ -220,11 +260,17 @@ main() {
     validar_env_deploy || exit 1
     
     atualizar_projeto_local
-    # deploy_frontend
+    # deploy_frontend  # Não usado - JardimGIS é SPA servido pelo Flask
     deploy_backend
     deploy_servico
+    deploy_apache_config  # NOVO: Instala configuração Apache do scada-web
     exportar_key_openai
     echo "[Deploy] Processo de Deploy concluído com sucesso!"
+    echo "[Deploy] "
+    echo "[Deploy] ✅ JardimGIS v2.0.0 implantado com sucesso!"
+    echo "[Deploy] 🌐 Acesse: http://automacao.tce.go.gov.br/jardimgis"
+    echo "[Deploy] 📝 Logs: sudo journalctl -u jardim_gis -f"
+    echo "[Deploy] 🔧 Status: sudo systemctl status jardim_gis"
 }
 
 main
