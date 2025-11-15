@@ -20,9 +20,10 @@ setup: validate
 	./$(VENV_PIP) install .
 
 
-# Executa o projeto
+# Executa o projeto (v2.0.0 - usa jardim_gis.py com .env loader)
+.PHONY: run
 run:
-	./.venv/bin/waitress-serve --host 127.0.0.1 --port $(PORT) $(APP_NAME):app
+	python3 jardim_gis.py
 
 
 # Apaga a venv
