@@ -122,13 +122,24 @@ deploy_backend() {
     cd $dir_atual
     echo "[Deploy] Configuração do Backend concluída."
 
-    if [ -e $LOGS_PATH ]; then
+    # Ajustar permissões de logs (se existirem arquivos)
+    if [ -d "$LOGS_PATH" ]; then
         echo "[Deploy] Ajustando permissões dos arquivos de log..."
-        if sudo chown tcego:tcego $LOGS_PATH/*.log 2>/dev/null; then
-            echo "[Deploy] Permissões de logging alteradas com sucesso."
+        
+        # Conta arquivos .log existentes
+        log_count=$(find "$LOGS_PATH" -maxdepth 1 -name "*.log" 2>/dev/null | wc -l)
+        
+        if [ "$log_count" -gt 0 ]; then
+            if sudo chown tcego:tcego "$LOGS_PATH"/*.log 2>/dev/null; then
+                echo "[Deploy] ✅ Permissões de $log_count arquivo(s) de log alteradas com sucesso."
+            else
+                echo "[Deploy] ⚠️  Aviso: Não foi possível alterar permissões de logs (normal no primeiro deploy)."
+            fi
         else
-            echo "[Deploy] Erro ao alterar permissões de logging."
+            echo "[Deploy] ℹ️  Nenhum arquivo de log encontrado ainda (será criado na primeira execução)."
         fi
+    else
+        echo "[Deploy] ⚠️  Diretório de logs $LOGS_PATH não existe ainda."
     fi
 
     echo "[Deploy] Verificando permissões de execução para scripts do Backend..."
